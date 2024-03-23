@@ -12,7 +12,6 @@ window.addEventListener("keydown", (event) => {
           player.hitBox.position.y + player.hitBox.height >= door.position.y &&
           player.hitBox.position.y <= door.position.y + door.height
         ) {
-          console.log("we are colinding");
           player.velocity.x = 0;
           player.velocity.y = 0;
           player.preventInput = true;

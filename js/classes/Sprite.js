@@ -76,7 +76,7 @@ class Sprite {
     if (this.currentAnimation?.onComplete) {
       if (
         this.currentFrame === this.frameRate - 1 &&
-        this.currentAnimation.isActive
+        !this.currentAnimation.isActive
       ) {
         this.currentAnimation.onComplete();
         this.currentAnimation.isActive = true;

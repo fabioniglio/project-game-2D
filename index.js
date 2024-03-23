@@ -4,19 +4,11 @@ const c = canvas.getContext("2d");
 canvas.width = 64 * 16;
 canvas.height = 64 * 9;
 
-const parsedCollisions = collisionsLevel1.parse2D();
-const collisionBlocks = parsedCollisions.createObjectsFrom2D();
-
-const backgroundLevel1 = new Sprite({
-  position: {
-    x: 0,
-    y: 0,
-  },
-  imageSrc: `./img/backgroundLevel1.png`,
-});
-
+let parsedCollisions;
+let collisionBlocks;
+let background;
+let doors;
 const player = new Player({
-  collisionBlocks,
   imageSrc: "./img/king/idle.png",
   frameRate: 11,
   animations: {
@@ -51,24 +43,131 @@ const player = new Player({
       imageSrc: "./img/king/enterDoor.png",
       onComplete: () => {
         console.log("completed animation");
+
+        gsap.to(overlay, {
+          opacity: 1,
+          onComplete: () => {
+            level++;
+            if (level === 4) level = 1;
+            levels[level].init();
+            player.switchSprite("idleRight");
+            player.preventInput = false;
+            gsap.to(overlay, {
+              opacity: 0,
+            });
+          },
+        });
       },
     },
   },
 });
 
-const doors = [
-  new Sprite({
-    position: {
-      x: 767,
-      y: 270,
+let level = 1;
+let levels = {
+  1: {
+    init: () => {
+      parsedCollisions = collisionsLevel1.parse2D();
+      collisionBlocks = parsedCollisions.createObjectsFrom2D();
+      player.collisionBlocks = collisionBlocks;
+
+      if (player.currentAnimation) {
+        player.currentAnimation.isActive = false;
+      }
+
+      background = new Sprite({
+        position: {
+          x: 0,
+          y: 0,
+        },
+        imageSrc: `./img/backgroundLevel1.png`,
+      });
+
+      doors = [
+        new Sprite({
+          position: {
+            x: 767,
+            y: 270,
+          },
+          imageSrc: "./img/doorOpen.png",
+          frameRate: 5,
+          frameBuffer: 5,
+          loop: false,
+          autoplay: false,
+        }),
+      ];
     },
-    imageSrc: "./img/doorOpen.png",
-    frameRate: 5,
-    frameBuffer: 5,
-    loop: false,
-    autoplay: false,
-  }),
-];
+  },
+  2: {
+    init: () => {
+      parsedCollisions = collisionsLevel2.parse2D();
+      collisionBlocks = parsedCollisions.createObjectsFrom2D();
+      player.collisionBlocks = collisionBlocks;
+      player.position.x = 96;
+      player.position.y = 140;
+
+      if (player.currentAnimation) {
+        player.currentAnimation.isActive = false;
+      }
+
+      background = new Sprite({
+        position: {
+          x: 0,
+          y: 0,
+        },
+        imageSrc: `./img/backgroundLevel2.png`,
+      });
+
+      doors = [
+        new Sprite({
+          position: {
+            x: 769,
+            y: 338,
+          },
+          imageSrc: "./img/doorOpen.png",
+          frameRate: 5,
+          frameBuffer: 5,
+          loop: false,
+          autoplay: false,
+        }),
+      ];
+    },
+  },
+  3: {
+    init: () => {
+      parsedCollisions = collisionsLevel3.parse2D();
+      collisionBlocks = parsedCollisions.createObjectsFrom2D();
+      player.collisionBlocks = collisionBlocks;
+      player.position.x = 730;
+      player.position.y = 140;
+
+      if (player.currentAnimation) {
+        player.currentAnimation.isActive = false;
+      }
+
+      background = new Sprite({
+        position: {
+          x: 0,
+          y: 0,
+        },
+        imageSrc: `./img/backgroundLevel3.png`,
+      });
+
+      doors = [
+        new Sprite({
+          position: {
+            x: 181,
+            y: 337,
+          },
+          imageSrc: "./img/doorOpen.png",
+          frameRate: 5,
+          frameBuffer: 5,
+          loop: false,
+          autoplay: false,
+        }),
+      ];
+    },
+  },
+};
 
 const keys = {
   w: {
@@ -81,12 +180,16 @@ const keys = {
     pressed: false,
   },
 };
+
+const overlay = {
+  opacity: 0,
+};
 function animated() {
   window.requestAnimationFrame(animated);
   //   c.fillStyle = "white";
   //   c.fillRect(0, 0, canvas.width, canvas.height);
 
-  backgroundLevel1.draw();
+  background.draw();
   collisionBlocks.forEach((collisionBlock) => {
     collisionBlock.draw();
   });
@@ -100,6 +203,14 @@ function animated() {
   player.handleInput(keys);
   player.draw();
   player.update();
+
+  c.save();
+  c.globalAlpha = overlay.opacity;
+  c.fillStyle = "black";
+  c.fillRect(0, 0, canvas.width, canvas.height);
+  c.restore();
 }
+
+levels[level].init();
 
 animated();
