@@ -190,6 +190,7 @@ function animated() {
   //   c.fillRect(0, 0, canvas.width, canvas.height);
 
   background.draw();
+  //test
   //   collisionBlocks.forEach((collisionBlock) => {
   //     collisionBlock.draw();
   //   });
