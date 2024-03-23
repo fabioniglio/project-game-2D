@@ -190,9 +190,9 @@ function animated() {
   //   c.fillRect(0, 0, canvas.width, canvas.height);
 
   background.draw();
-  collisionBlocks.forEach((collisionBlock) => {
-    collisionBlock.draw();
-  });
+  //   collisionBlocks.forEach((collisionBlock) => {
+  //     collisionBlock.draw();
+  //   });
 
   doors.forEach((door) => {
     door.draw();
