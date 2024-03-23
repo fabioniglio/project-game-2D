@@ -7,7 +7,19 @@ canvas.height = 64 * 9;
 const parsedCollisions = collisionsLevel1.parse2D();
 const collisionBlocks = parsedCollisions.createObjectsFrom2D();
 
-const player = new Player({ collisionBlocks });
+const backgroundLevel1 = new Sprite({
+  position: {
+    x: 0,
+    y: 0,
+  },
+  imageSrc: `./img/backgroundLevel1.png`,
+});
+
+const player = new Player({
+  collisionBlocks,
+  imageSrc: "./img/king/idle.png",
+  frameRate: 11,
+});
 
 const keys = {
   w: {

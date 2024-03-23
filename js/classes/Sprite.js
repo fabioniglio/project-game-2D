@@ -1,23 +1,51 @@
 class Sprite {
-  constructor({ position }) {
+  constructor({ position, imageSrc, frameRate = 1 }) {
     this.position = position;
     this.image = new Image();
     this.image.onload = () => {
       this.loaded = true;
+      this.width = this.image.width / this.frameRate;
+      this.height = this.image.height;
     };
 
-    this.image.src = `./img/backgroundLevel1.png`;
+    this.image.src = imageSrc;
     this.loaded = false;
+    this.frameRate = frameRate;
+    this.currentFrame = 0;
+    this.elapsedFrame = 0;
+    this.frameBuffer = 2;
   }
 
   draw() {
     if (!this.loaded) return;
-    c.drawImage(this.image, this.position.x, this.position.y);
+    const cropBox = {
+      position: {
+        x: this.width * this.currentFrame,
+        y: 0,
+      },
+      width: this.width,
+      heigh: this.height,
+    };
+    c.drawImage(
+      this.image,
+      cropBox.position.x,
+      cropBox.position.y,
+      cropBox.width,
+      cropBox.heigh,
+      this.position.x,
+      this.position.y,
+      this.width,
+      this.height
+    );
+
+    this.updateFrames();
+  }
+
+  updateFrames() {
+    this.elapsedFrame++;
+    if (this.elapsedFrame % this.frameBuffer === 0) {
+      if (this.currentFrame < this.frameRate - 1) this.currentFrame++;
+      else this.currentFrame = 0;
+    }
   }
 }
-const backgroundLevel1 = new Sprite({
-  position: {
-    x: 0,
-    y: 0,
-  },
-});
